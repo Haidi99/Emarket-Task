@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using EmarketTask.Models;
+using EmarketTask.ViewModels;
 
 namespace EmarketTask.Controllers
 {
@@ -18,9 +19,10 @@ namespace EmarketTask.Controllers
         // GET: products
         public ActionResult Index(string search)
         {
-
+                var carts = db.Carts.ToList();
                 var products = db.products.ToList();
                 var categories = db.categories.ToList();
+           
                 if (!string.IsNullOrEmpty(search))
                 {
                     category x = db.categories
@@ -30,9 +32,14 @@ namespace EmarketTask.Controllers
                         products = db.products
                             .Where(s => s.CID == x.CID).ToList();
                     }
-
-                }
-                return View(products);
+                
+            }
+            ProductCart productcartmodel = new ProductCart()
+            {
+                cart = carts,
+                myproducts = products
+            };
+            return View(productcartmodel);
             
             /*var products = db.products.Include(p => p.Cart).Include(p => p.category);
             return View(products.ToList());*/
@@ -168,5 +175,8 @@ namespace EmarketTask.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+        
     }
 }
